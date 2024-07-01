@@ -8,7 +8,7 @@ class NetworkService {
   
     async fetchUserLocation(clientIp) {
       try {
-        const response = await axios.get(`https://api.geoapify.com/v1/ipinfo?&apiKey=${this.geoapifyApiKey}`);
+        const response = await axios.get(`https://api.geoapify.com/v1/ipinfo?ip=${clientIp}&apiKey=${this.geoapifyApiKey}`);
         return response.data;
       } catch (error) {
         console.error('Error fetching location data:', error);
