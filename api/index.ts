@@ -16,7 +16,8 @@ const networkService = new NetworkService(geoApiKey, weatherApiKey);
 app.get("/api/hello", async (req, res) => {
   try {
     const visitorName = req.query.visitor_name;
-    const clientIp = req.ip;
+    const clientIp = req.socket.remoteAddress;
+    console.log(clientIp);
 
     if (!visitorName) {
       return res.status(400).json({
@@ -33,7 +34,7 @@ app.get("/api/hello", async (req, res) => {
     return res.status(200).json({
       client_ip: clientIp,
       location: userLocation.city.names.en,
-      message: `Hello ${visitorName}! The temperature is ${userWeather.current.temp_f} in ${userLocation.city.names.en}.`,
+      message: `Hello ${visitorName}! The temperature is ${userWeather.current.temp_f} *F in ${userLocation.city.names.en}.`,
     });
   } catch (error) {
     return res.status(500).json({
