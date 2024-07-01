@@ -5,6 +5,7 @@ const NetworkService = require("../apiService");
 const app = express();
 
 const port = process.env.PORT || 3000;
+app.set('trust proxy', true);
 
 app.use(express.json());
 
@@ -16,7 +17,7 @@ const networkService = new NetworkService(geoApiKey, weatherApiKey);
 app.get("/api/hello", async (req, res) => {
   try {
     const visitorName = req.query.visitor_name;
-    const clientIp = req.socket.remoteAddress;
+    const clientIp = (req.headers['x-forwarded-for'] as string) || 'IP not available';
     console.log(clientIp);
 
     if (!visitorName) {
@@ -26,14 +27,14 @@ app.get("/api/hello", async (req, res) => {
       });
     }
 
-    const userLocation = await networkService.fetchUserLocation();
+    const userLocation = await networkService.fetchUserLocation(clientIp);
     const userWeather = await networkService.fetchWeather(
       userLocation.city.names.en
     );
 
     return res.status(200).json({
       client_ip: clientIp,
-      location: userLocation.city.names.en,
+      location: userLocation.city.names,
       message: `Hello ${visitorName}! The temperature is ${userWeather.current.temp_f} *F in ${userLocation.city.names.en}.`,
     });
   } catch (error) {

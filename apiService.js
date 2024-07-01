@@ -6,7 +6,7 @@ class NetworkService {
       this.weatherApiKey = weatherApiKey;
     }
   
-    async fetchUserLocation() {
+    async fetchUserLocation(clientIp) {
       try {
         const response = await axios.get(`https://api.geoapify.com/v1/ipinfo?&apiKey=${this.geoapifyApiKey}`);
         return response.data;
